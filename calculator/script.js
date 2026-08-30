@@ -1,5 +1,4 @@
 var screen = document.getElementById("screen");
-
 var welcomeText = "HELLO";
 var shouldClearScreen = true;
 
@@ -12,23 +11,57 @@ function triggerScreenTransition() {
 
 function appendValue(buttonValue) {
     triggerScreenTransition();
-    var currentText = screen.value;
+
+    if (screen.value === welcomeText || screen.value === "Error") {
+        if (buttonValue === "+" || buttonValue === "-" || buttonValue === "*" || buttonValue === "/" || buttonValue === "%") {
+            return;
+        }
+        if (buttonValue === ".") {
+            screen.value = "0.";
+            shouldClearScreen = false;
+            return;
+        }
+        if (buttonValue === "0") {
+            screen.value = "0";
+            shouldClearScreen = true;
+            return;
+        }
+        screen.value = buttonValue;
+        shouldClearScreen = false;
+        return;
+    }
 
     if (buttonValue === "0") {
-        if (screen.value === "" || shouldClearScreen === true) {
+        if (shouldClearScreen === true || screen.value === "0") {
+            screen.value = "0";
+            shouldClearScreen = true;
+            return;
         }
         
         var lastChar = screen.value[screen.value.length - 1];
         if (lastChar === "+" || lastChar === "-" || lastChar === "*" || lastChar === "/" || lastChar === "%") {
-            return; 
+            screen.value = screen.value + "0";
+            return;
+        }
+        
+        var endsWithOperatorZero = false;
+        if (screen.value.length >= 2) {
+            var secondLast = screen.value[screen.value.length - 2];
+            if (secondLast === "+" || secondLast === "-" || secondLast === "*" || secondLast === "/" || secondLast === "%") {
+                if (lastChar === "0") {
+                    endsWithOperatorZero = true;
+                }
+            }
+        }
+        if (endsWithOperatorZero === true) {
+            return;
         }
     }
 
     if (shouldClearScreen === true) {
         if (buttonValue === "+" || buttonValue === "-" || buttonValue === "*" || buttonValue === "/" || buttonValue === "%") {
             shouldClearScreen = false;
-        } 
-        else {
+        } else {
             if (buttonValue === ".") {
                 screen.value = "0.";
             } else {
@@ -39,19 +72,13 @@ function appendValue(buttonValue) {
         }
     }
 
-    if (screen.value === welcomeText || screen.value === "Error") {
-        if (buttonValue === "+" || buttonValue === "*" || buttonValue === "/" || buttonValue === "%") {
-            return; 
-        }
-        if (buttonValue === ".") {
-            screen.value = "0.";
-        } else {
-            screen.value = buttonValue;
-        }
-        return;
-    }
-
     if (buttonValue === ".") {
+        var lastChar = screen.value[screen.value.length - 1];
+        if (lastChar === "+" || lastChar === "-" || lastChar === "*" || lastChar === "/" || lastChar === "%" || screen.value === "") {
+            screen.value = screen.value + "0.";
+            return;
+        }
+
         var hasDecimal = false;
         for (var i = screen.value.length - 1; i >= 0; i--) {
             var char = screen.value[i];
@@ -83,7 +110,7 @@ function appendValue(buttonValue) {
 
 function clearScreen() {
     triggerScreenTransition();
-    screen.value = welcomeText;
+    screen.value = "0";
     shouldClearScreen = true;
 }
 
@@ -133,7 +160,6 @@ function calculateResult() {
 
     try {
         var rawResult = eval(expression);
-        
         if (rawResult === Infinity || isNaN(rawResult)) {
             screen.value = "Error";
         } else {
@@ -152,26 +178,21 @@ document.addEventListener("keydown", function(event) {
     if (key >= "0" && key <= "9") {
         appendValue(key);
     }
-    
     if (key === "+" || key === "-" || key === "*" || key === "%" || key === ".") {
         appendValue(key);
     }
-    
     if (key === "/") {
-        event.preventDefault(); 
+        event.preventDefault();
         appendValue("/");
     }
-    
     if (key === "Enter" || key === "=") {
-        event.preventDefault(); 
+        event.preventDefault();
         calculateResult();
     }
-    
     if (key === "Backspace") {
         deleteLast();
     }
-    
     if (key === "Escape") {
         clearScreen();
     }
-}  );
+});
