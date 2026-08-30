@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Aviral Sachan - Web Portfolio</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <style>
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: rgb(15, 23, 42);
+            color: rgb(248, 250, 252);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background-image: radial-gradient(at top, rgb(30, 41, 59) 0%, rgb(15, 23, 42) 80%);
+        }
+      
+        .container {
+            width: 100%;
+            max-width: 540px;
+            background: rgb(30, 41, 59);
+            padding: 40px 32px;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            border: 1px solid rgb(51, 65, 85);
+            animation: fadeInUp 0.6s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+      
+        h1 {
+            display: inline-block;
+            margin-bottom: 6px;
+            font-size: 2.2rem;
+            font-weight: 700;
+            letter-spacing: -0.02em;
+            background: linear-gradient(to right, rgb(56, 189, 248) 20%,
+                                         rgb(255, 255, 255) 40%,
+                                         rgb(255, 255, 255) 60%, 
+                                         rgb(56, 189, 248) 80%);
+            background-size: 200% auto;
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: shine 4s linear infinite;
+        }
+      
+        p {
+            color: rgb(148, 163, 184);
+            font-size: 1.05rem;
+            margin-top: 0;
+        }
+      
+        .project-list { 
+            margin-top: 32px;
+        }
+      
+        .project-card {
+            background: rgb(15, 23, 42);
+            padding: 22px 24px;
+            border-radius: 12px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-left: 6px solid rgb(56, 189, 248);
+            border-top: 1px solid transparent;
+            border-bottom: 1px solid transparent;
+            transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+        }
+        
+        .project-card:hover {
+            transform: translateY(-4px); 
+            box-shadow: 0 12px 20px rgba(0, 0, 0, 0.4);
+            border-top-color: rgb(51, 65, 85);
+            border-bottom-color: rgb(51, 65, 85);
+        }
+      
+        .project-info { 
+            text-align: left; 
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+      
+        .project-name {
+            font-weight: 600;
+            color: rgb(241, 245, 249); 
+            font-size: 1.2rem; 
+        }
+      
+        .project-tech { 
+            color: rgb(100, 116, 139);
+            font-size: 0.85rem;
+            font-weight: 500;
+        }
+      
+        .btn {
+            background: rgb(56, 189, 248);
+            color: rgb(15, 23, 42);
+            text-decoration: none;
+            padding: 10px 20px;
+            border-radius: 8px;
+            font-size: 0.95rem;
+            font-weight: 700;
+            display: inline-flex;
+            align-items: center;
+            transition: all 0.2s ease;
+        }
+        
+        .btn:hover {
+            background: rgb(125, 211, 252); 
+            transform: scale(1.03);
+            box-shadow: 0 4px 12px rgba(56, 189, 248, 0.2);
+        }
+
+        @keyframes shine {
+            to {
+                background-position: 200% center;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+      
+        @media (max-width: 480px) {
+            .container {
+                padding: 32px 20px;
+            }
+            .project-card {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 16px;
+                text-align: center;
+            }
+            .project-info {
+                text-align: center;
+            }
+            .btn {
+                justify-content: center;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <header>
+            <h1>Aviral Sachan</h1>
+            <p>BTech CSE Student | Web Projects Hub</p>
+        </header>
+        
+        <hr style="border: 0; border-top: 1px solid rgb(51, 65, 85); margin: 28px 0;">
+        
+        <div class="project-list">
+            <div class="project-card">
+                <div class="project-info">
+                    <span class="project-name">Interactive Calculator</span>
+                    <span class="project-tech">HTML, CSS, JavaScript</span>
+                </div>
+                <a class="btn" href="https://aviral-sachan.github.io/web-dev-portfolio/calculator/" target="_blank" rel="noopener">Open App</a>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
