@@ -1,11 +1,8 @@
-// 1. Select the calculator screen from the HTML
 var screen = document.getElementById("screen");
 
-// 2. Setup variables to track the state of the calculator
 var welcomeText = "HELLO";
 var shouldClearScreen = true;
 
-// Visual transition helper for text flash/fade feedback
 function triggerScreenTransition() {
     screen.classList.add('text-fade');
     setTimeout(function() {
@@ -13,26 +10,20 @@ function triggerScreenTransition() {
     }, 80);
 }
 
-// 3. Function to handle when any button is pressed
 function appendValue(buttonValue) {
     triggerScreenTransition();
     var currentText = screen.value;
 
-        // --- BLOCK STARTING WITH ZERO ---
     if (buttonValue === "0") {
-        // Condition A: If the screen is completely empty or just reset to '0'
         if (screen.value === "" || shouldClearScreen === true) {
-            return; // Exit function completely and ignore the click!
         }
         
-        // Condition B: If the very last character on screen is an operator (+, -, *, /, %)
         var lastChar = screen.value[screen.value.length - 1];
         if (lastChar === "+" || lastChar === "-" || lastChar === "*" || lastChar === "/" || lastChar === "%") {
-            return; // Exit function completely so they can't type an operator followed by a 0!
+            return; 
         }
     }
 
-    // --- FIX FOR CHAINING MATH ---
     if (shouldClearScreen === true) {
         if (buttonValue === "+" || buttonValue === "-" || buttonValue === "*" || buttonValue === "/" || buttonValue === "%") {
             shouldClearScreen = false;
@@ -48,7 +39,6 @@ function appendValue(buttonValue) {
         }
     }
 
-    // If the welcome message or an error is showing, replace it immediately
     if (screen.value === welcomeText || screen.value === "Error") {
         if (buttonValue === "+" || buttonValue === "*" || buttonValue === "/" || buttonValue === "%") {
             return; 
@@ -61,7 +51,6 @@ function appendValue(buttonValue) {
         return;
     }
 
-    // --- LOOP PRACTICE: Check for duplicate decimal points ---
     if (buttonValue === ".") {
         var hasDecimal = false;
         for (var i = screen.value.length - 1; i >= 0; i--) {
@@ -79,7 +68,6 @@ function appendValue(buttonValue) {
         }
     }
 
-    // --- FIX FOR OPERATOR SWAPPING ---
     var lastCharacter = screen.value[screen.value.length - 1];
     var isLastCharOperator = (lastCharacter === "+" || lastCharacter === "-" || lastCharacter === "*" || lastCharacter === "/" || lastCharacter === "%");
     var isNewCharOperator = (buttonValue === "+" || buttonValue === "-" || buttonValue === "*" || buttonValue === "/" || buttonValue === "%");
@@ -93,14 +81,12 @@ function appendValue(buttonValue) {
     screen.value = screen.value + buttonValue;
 }
 
-// 4. Function for the AC button
 function clearScreen() {
     triggerScreenTransition();
     screen.value = welcomeText;
     shouldClearScreen = true;
 }
 
-// 5. Function for the DEL button
 function deleteLast() {
     triggerScreenTransition();
     var currentText = screen.value;
@@ -120,7 +106,6 @@ function deleteLast() {
     }
 }
 
-// 6. Function for the equal sign (=)
 function calculateResult() {
     triggerScreenTransition();
     var expression = screen.value;
@@ -159,9 +144,8 @@ function calculateResult() {
     }
     
     shouldClearScreen = true;
-} // <-- The function securely ends here now!
+}
 
-// 7. Keyboard support added cleanly outside on its own level
 document.addEventListener("keydown", function(event) {
     var key = event.key;
 
@@ -190,4 +174,4 @@ document.addEventListener("keydown", function(event) {
     if (key === "Escape") {
         clearScreen();
     }
-});
+}  );
