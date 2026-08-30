@@ -2,7 +2,7 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana;
 }
 
 body {
@@ -27,7 +27,7 @@ body {
     height: 80px;
     background-color: white;
     color: black;
-    font-size: clamp(0.9rem, 4.5vw, 1.6rem); /* Dynamic scale so welcome message doesn't break */
+    font-size: clamp(0.9rem, 4.5vw, 1.6rem);
     text-align: right;
     border-radius: 40px;
     border: none;
@@ -38,7 +38,6 @@ body {
     transition: opacity 0.08s ease, transform 0.08s ease;
 }
 
-/* Flash/fade effect triggered by JS clicks and typing */
 .display.text-fade {
     opacity: 0.3;
     transform: scale(0.98);
