@@ -1,59 +1,46 @@
 var screen = document.getElementById("screen");
+
 var welcomeText = "HELLO";
 var shouldClearScreen = true;
 
-function triggerScreenTransition() {
-    screen.classList.add('text-fade');
-    setTimeout(function() {
-        screen.classList.remove('text-fade');
-    }, 80);
-}
-
 function appendValue(buttonValue) {
-    triggerScreenTransition();
+    var currentText = screen.value;
 
     if (screen.value === welcomeText || screen.value === "Error") {
-        if (buttonValue === "+" || buttonValue === "-" || buttonValue === "*" || buttonValue === "/" || buttonValue === "%") {
-            return;
-        }
-        if (buttonValue === ".") {
-            screen.value = "0.";
-            shouldClearScreen = false;
-            return;
+        if (buttonValue === "+" || buttonValue === "*" || buttonValue === "/" || buttonValue === "%") {
+            return; 
         }
         if (buttonValue === "0") {
             screen.value = "0";
             shouldClearScreen = true;
             return;
         }
-        screen.value = buttonValue;
+        if (buttonValue === ".") {
+            screen.value = "0.";
+        } else {
+            screen.value = buttonValue;
+        }
         shouldClearScreen = false;
         return;
     }
 
     if (buttonValue === "0") {
-        if (shouldClearScreen === true || screen.value === "0") {
+        if (screen.value === "" || screen.value === "0" || shouldClearScreen === true) {
             screen.value = "0";
             shouldClearScreen = true;
-            return;
+            return; 
         }
         
         var lastChar = screen.value[screen.value.length - 1];
-        if (lastChar === "+" || lastChar === "-" || lastChar === "*" || lastChar === "/" || lastChar === "%") {
+        var secondLastChar = screen.value[screen.value.length - 2];
+        var isLastCharOperator = (lastChar === "+" || lastChar === "-" || lastChar === "*" || lastChar === "/" || lastChar === "%");
+        var isSecondLastCharOperator = (secondLastChar === "+" || secondLastChar === "-" || secondLastChar === "*" || secondLastChar === "/" || secondLastChar === "%" || secondLastChar === undefined);
+        
+        if (isLastCharOperator) {
             screen.value = screen.value + "0";
             return;
         }
-        
-        var endsWithOperatorZero = false;
-        if (screen.value.length >= 2) {
-            var secondLast = screen.value[screen.value.length - 2];
-            if (secondLast === "+" || secondLast === "-" || secondLast === "*" || secondLast === "/" || secondLast === "%") {
-                if (lastChar === "0") {
-                    endsWithOperatorZero = true;
-                }
-            }
-        }
-        if (endsWithOperatorZero === true) {
+        if (lastChar === "0" && isSecondLastCharOperator) {
             return;
         }
     }
@@ -61,7 +48,8 @@ function appendValue(buttonValue) {
     if (shouldClearScreen === true) {
         if (buttonValue === "+" || buttonValue === "-" || buttonValue === "*" || buttonValue === "/" || buttonValue === "%") {
             shouldClearScreen = false;
-        } else {
+        } 
+        else {
             if (buttonValue === ".") {
                 screen.value = "0.";
             } else {
@@ -109,13 +97,11 @@ function appendValue(buttonValue) {
 }
 
 function clearScreen() {
-    triggerScreenTransition();
-    screen.value = "0";
+    screen.value = "0"; 
     shouldClearScreen = true;
 }
 
 function deleteLast() {
-    triggerScreenTransition();
     var currentText = screen.value;
     
     if (currentText === welcomeText || currentText === "Error" || shouldClearScreen === true) {
@@ -134,7 +120,6 @@ function deleteLast() {
 }
 
 function calculateResult() {
-    triggerScreenTransition();
     var expression = screen.value;
     
     var isValid = true;
@@ -160,6 +145,7 @@ function calculateResult() {
 
     try {
         var rawResult = eval(expression);
+        
         if (rawResult === Infinity || isNaN(rawResult)) {
             screen.value = "Error";
         } else {
@@ -178,20 +164,25 @@ document.addEventListener("keydown", function(event) {
     if (key >= "0" && key <= "9") {
         appendValue(key);
     }
+    
     if (key === "+" || key === "-" || key === "*" || key === "%" || key === ".") {
         appendValue(key);
     }
+    
     if (key === "/") {
-        event.preventDefault();
+        event.preventDefault(); 
         appendValue("/");
     }
+    
     if (key === "Enter" || key === "=") {
-        event.preventDefault();
+        event.preventDefault(); 
         calculateResult();
     }
+    
     if (key === "Backspace") {
         deleteLast();
     }
+    
     if (key === "Escape") {
         clearScreen();
     }
