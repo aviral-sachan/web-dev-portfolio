@@ -478,11 +478,23 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     });
 
-    const activeSessionUser = localStorage.getItem("active-login-session");
+        let activeSessionUser = null;
+    try {
+        activeSessionUser = localStorage.getItem("active-login-session");
+    } catch (e) {
+        console.log("Local storage temp block on GitHub Pages caught.");
+    }
+
     if (activeSessionUser) {
         loadDashboardScreen(activeSessionUser);
     } else {
         loadAuthScreen();
     }
-    applyTheme(localStorage.getItem("user-theme") || "light", true);
+
+    let savedTheme = "light";
+    try {
+        savedTheme = localStorage.getItem("user-theme") || "light";
+    } catch (e) {}
+    
+    applyTheme(savedTheme, true);
 });
