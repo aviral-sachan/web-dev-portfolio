@@ -1,21 +1,20 @@
 document.addEventListener("DOMContentLoaded", () => {
-    // 1. ASSET PRELOADER INITIALIZATION (साइट को स्मूथ चलाने के लिए)
-    const preloader = document.getElementById("app-preloader");
-    if (preloader) {
-        window.addEventListener("load", () => {
+    const removePreloader = () => {
+        const preloader = document.getElementById("app-preloader");
+        if (preloader) {
             setTimeout(() => {
                 preloader.style.opacity = "0";
                 setTimeout(() => preloader.style.display = "none", 500);
-            }, 600);
-        });
+            }, 400); 
+        }
+    };
+
+    if (document.readyState === "complete") {
+        removePreloader();
     } else {
-        setTimeout(() => {
-            const fallbackPreloader = document.getElementById("app-preloader");
-            if (fallbackPreloader) {
-                fallbackPreloader.style.opacity = "0";
-                setTimeout(() => fallbackPreloader.style.display = "none", 500);
-            }
-        }, 800);
+        window.addEventListener("load", removePreloader);
+        
+        setTimeout(removePreloader, 1500);
     }
 
     const blurOverlay = document.getElementById("cinematic-blur-overlay");
