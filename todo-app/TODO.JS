@@ -2,10 +2,11 @@ document.addEventListener("DOMContentLoaded", () => {
     const removePreloader = () => {
         const preloader = document.getElementById("app-preloader");
         if (preloader) {
+            preloader.style.opacity = "0";
             setTimeout(() => {
-                preloader.style.opacity = "0";
-                setTimeout(() => preloader.style.display = "none", 500);
-            }, 400); 
+                preloader.style.display = "none";
+                preloader.style.visibility = "hidden";
+            }, 400);
         }
     };
 
@@ -13,8 +14,7 @@ document.addEventListener("DOMContentLoaded", () => {
         removePreloader();
     } else {
         window.addEventListener("load", removePreloader);
-        
-        setTimeout(removePreloader, 1500);
+        setTimeout(removePreloader, 1000);
     }
 
     const blurOverlay = document.getElementById("cinematic-blur-overlay");
@@ -36,6 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
         return nativeDay === 0 ? "day7" : "day" + nativeDay;
     };
     const activeStorageKey = getStorageKeyForToday();
+
     const AUTH_TEMPLATE = `
         <div id="auth-panel" class="todo-container auth-box">
             <div class="auth-brand-side">
@@ -166,39 +167,34 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
         </div>
     `;
+
     const loadAuthScreen = () => {
         document.body.classList.add("auth-view");
         if (blurOverlay) blurOverlay.className = "initial-blur";
         mainWrapper.innerHTML = AUTH_TEMPLATE;
         setupAuthEvents();
     };
-
     const triggerCinematicTransition = (userKey) => {
         const activeContainer = document.querySelector(".todo-container");
         if (activeContainer) activeContainer.classList.add("wind-exit");
         setTimeout(() => { if (blurOverlay) blurOverlay.className = "reveal-clear"; }, 400);
         setTimeout(() => { loadDashboardScreen(userKey); }, 1200);
     };
-
     const loadDashboardScreen = (userKey) => {
         document.body.classList.remove("auth-view");
         mainWrapper.innerHTML = MAIN_APP_TEMPLATE;
-
         const profileData = JSON.parse(localStorage.getItem("user-profile-" + userKey)) || {};
         const greetingHeader = document.getElementById("user-greeting");
         if (greetingHeader && profileData.name) {
             greetingHeader.textContent = "🍃 Welcome, " + profileData.name + "!";
         }
-
         setupDashboardEvents(userKey);
         setupPomodoroTimer();
-
         const themeToggleBtn = document.getElementById("theme-toggle-btn");
         if (themeToggleBtn) {
             themeToggleBtn.textContent = document.body.classList.contains("dark-theme") ? "☀️ Light Mode" : "🌙 Dark Mode";
         }
     };
-
     const setupAuthEvents = () => {
         const tabLoginBtn = document.getElementById("tab-login-btn");
         const tabSignupBtn = document.getElementById("tab-signup-btn");
@@ -213,11 +209,9 @@ document.addEventListener("DOMContentLoaded", () => {
         const captchaInput = document.getElementById("signup-captcha-input");
         const brandHeadline = document.querySelector(".auth-brand-side h2");
         const brandText = document.querySelector(".auth-brand-side p");
-
         if (tabLoginBtn && tabSignupBtn && loginForm && signupForm) {
             loginForm.style.display = "flex";
             signupForm.style.display = "none";
-
             tabLoginBtn.addEventListener("click", (e) => {
                 e.preventDefault();
                 tabLoginBtn.classList.add("active");
@@ -227,7 +221,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 if (brandHeadline) brandHeadline.textContent = "Welcome Back!";
                 if (brandText) brandText.textContent = "To stay connected with us please login with your personal info";
             });
-
             tabSignupBtn.addEventListener("click", (e) => {
                 e.preventDefault();
                 tabSignupBtn.classList.add("active");
@@ -239,22 +232,19 @@ document.addEventListener("DOMContentLoaded", () => {
                 generateCaptcha();
             });
         }
-
         const updateUsernamePreview = () => {
             if (!signupName || !signupDob || !signupUserPreview) return;
             const nameVal = signupName.value.trim().toLowerCase().replace(/\s+/g, '');
             const dobVal = signupDob.value;
             if (nameVal.length >= 3 && dobVal) {
-                const yearPart = dobVal.split("-")[0];
+                const yearPart = dobVal.split("-");
                 signupUserPreview.value = nameVal.substring(0, 3) + yearPart;
             } else { signupUserPreview.value = ""; }
         };
-
         if (signupName && signupDob) {
             signupName.addEventListener("input", updateUsernamePreview);
             signupDob.addEventListener("input", updateUsernamePreview);
         }
-
         const generateCaptcha = () => {
             if (!captchaDisplay) return;
             const charset = "ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnpqrstuvwxyz23456789";
@@ -262,9 +252,7 @@ document.addEventListener("DOMContentLoaded", () => {
             for (let i = 0; i < 6; i++) generatedCaptchaText += charset.charAt(Math.floor(Math.random() * charset.length));
             captchaDisplay.textContent = generatedCaptchaText;
         };
-
         if (captchaRefreshBtn) captchaRefreshBtn.addEventListener("click", generateCaptcha);
-
         if (signupForm) {
             signupForm.addEventListener("submit", (e) => {
                 e.preventDefault();
@@ -276,7 +264,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 loadAuthScreen();
             });
         }
-
         if (loginForm) {
             loginForm.addEventListener("submit", (e) => {
                 e.preventDefault();
@@ -307,10 +294,8 @@ document.addEventListener("DOMContentLoaded", () => {
         const contactTrigger = document.getElementById("contact-trigger");
         const contactModal = document.getElementById("contact-modal");
         const contactCloseBtn = document.getElementById("contact-close-btn");
-
         tasks = JSON.parse(localStorage.getItem(userKey + "-tasks-" + activeStorageKey)) || [];
         const saveTasks = () => localStorage.setItem(userKey + "-tasks-" + activeStorageKey, JSON.stringify(tasks));
-
         const renderTasks = () => {
             if (!taskList) return;
             taskList.innerHTML = "";
@@ -318,19 +303,15 @@ document.addEventListener("DOMContentLoaded", () => {
                 const li = document.createElement("li");
                 li.className = "priority-" + taskObj.priority;
                 if (taskObj.completed) li.classList.add("task-done");
-
                 const span = document.createElement("span");
                 span.className = "task-text-node"; span.textContent = taskObj.text;
                 span.addEventListener("click", () => { tasks[index].completed = !tasks[index].completed; saveTasks(); renderTasks(); });
-
                 const deleteBtn = document.createElement("button");
                 deleteBtn.className = "btn-delete"; deleteBtn.textContent = "✕";
                 deleteBtn.addEventListener("click", (e) => { e.stopPropagation(); tasks.splice(index, 1); saveTasks(); renderTasks(); });
-
                 li.appendChild(span); li.appendChild(deleteBtn); taskList.appendChild(li);
             });
         };
-
         if (addBtn) {
             addBtn.addEventListener("click", () => {
                 const txt = taskInput.value.trim(); if (!txt) return;
@@ -338,10 +319,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 saveTasks(); renderTasks(); taskInput.value = "";
             });
         }
-
         if (taskInput) taskInput.addEventListener("keypress", (e) => { if (e.key === "Enter") addBtn.click(); });
         if (clearAllBtn) clearAllBtn.addEventListener("click", () => { if (confirm("Delete all today's tasks?")) { tasks = []; saveTasks(); renderTasks(); } });
-
         if (logoutBtn) {
             logoutBtn.addEventListener("click", () => {
                 clearInterval(pomodoroInterval);
@@ -349,15 +328,12 @@ document.addEventListener("DOMContentLoaded", () => {
                 loadAuthScreen();
             });
         }
-
         if (historyTrigger) {
             historyTrigger.addEventListener("click", (e) => { e.preventDefault(); e.stopPropagation(); historyDropdown.classList.toggle("show"); });
         }
         document.addEventListener("click", () => { if (historyDropdown) historyDropdown.classList.remove("show"); });
-
         if (contactTrigger) contactTrigger.addEventListener("click", (e) => { e.preventDefault(); contactModal.classList.add("open"); });
         if (contactCloseBtn) contactCloseBtn.addEventListener("click", () => contactModal.classList.remove("open"));
-
         document.querySelectorAll(".dropdown-item").forEach(item => {
             item.addEventListener("click", (e) => {
                 e.preventDefault();
@@ -366,7 +342,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const historicalData = JSON.parse(localStorage.getItem(userKey + "-tasks-" + targetedDayKey)) || [];
                 if (!modalTaskList) return;
                 modalTaskList.innerHTML = "";
-                if (historicalData.length === 0) { modalTaskList.innerHTML = "<p style='color:#eee; padding: 10px 0;'>No tasks found for this day.</p>"; }
+                if (historicalData.length === 0) { modalTaskList.innerHTML = "No tasks found for this day."; }
                 else {
                     historicalData.forEach(task => {
                         const historicalLi = document.createElement("li"); historicalLi.className = "modal-li-item";
@@ -385,15 +361,12 @@ document.addEventListener("DOMContentLoaded", () => {
         const timerStatus = document.getElementById("timer-status");
         const startBtn = document.getElementById("timer-start-btn");
         const resetBtn = document.getElementById("timer-reset-btn");
-
         if (!timerDisplay || !timerStatus || !startBtn || !resetBtn) return;
-
         const updateTimerInterface = () => {
             const mins = Math.floor(timeRemaining / 60).toString().padStart(2, '0');
             const secs = (timeRemaining % 60).toString().padStart(2, '0');
             timerDisplay.textContent = mins + ":" + secs;
         };
-
         startBtn.addEventListener("click", () => {
             if (isTimerRunning) {
                 clearInterval(pomodoroInterval);
@@ -404,7 +377,6 @@ document.addEventListener("DOMContentLoaded", () => {
                 startBtn.textContent = "Pause";
                 startBtn.style.background = "#e67e22";
                 timerStatus.textContent = "Stay focused on tasks!";
-
                 pomodoroInterval = setInterval(() => {
                     if (timeRemaining > 0) {
                         timeRemaining--;
@@ -423,7 +395,6 @@ document.addEventListener("DOMContentLoaded", () => {
             }
             isTimerRunning = !isTimerRunning;
         });
-
         resetBtn.addEventListener("click", () => {
             clearInterval(pomodoroInterval);
             isTimerRunning = false;
@@ -434,15 +405,12 @@ document.addEventListener("DOMContentLoaded", () => {
             updateTimerInterface();
         });
     };
-
     const videoA = document.getElementById("video-a");
     const videoB = document.getElementById("video-b");
     const startOffset = 1.5;
     const endBufferOffset = 0.8;
     let activePlayer = videoA, backupPlayer = videoB, timeupdateListener = null;
-
     const getVideoSource = () => document.body.classList.contains("dark-theme") ? "leaf2_gwr_video_mvp.mp4" : "leaf.mp4";
-
     const setupSeamlessLoop = (active, backup) => {
         if (!active || !backup) return;
         if (timeupdateListener) active.removeEventListener("timeupdate", timeupdateListener);
@@ -460,7 +428,6 @@ document.addEventListener("DOMContentLoaded", () => {
         };
         active.addEventListener("timeupdate", timeupdateListener);
     };
-
     const applyTheme = (theme, isInitialLoad = false) => {
         if (theme === "dark") {
             document.body.classList.remove("light-theme"); document.body.classList.add("dark-theme");
@@ -470,7 +437,6 @@ document.addEventListener("DOMContentLoaded", () => {
             if (document.getElementById("theme-toggle-btn")) document.getElementById("theme-toggle-btn").textContent = "🌙 Dark Mode";
         }
         localStorage.setItem("user-theme", theme);
-
         const currentTargetSrc = getVideoSource();
         if (isInitialLoad && videoA && videoB) {
             videoA.src = currentTargetSrc; videoB.src = currentTargetSrc;
@@ -481,7 +447,6 @@ document.addEventListener("DOMContentLoaded", () => {
             setupSeamlessLoop(videoA, videoB);
         }
     };
-
     document.addEventListener("click", (e) => {
         if (e.target && e.target.id === "theme-toggle-btn") {
             const newTheme = document.body.classList.contains("dark-theme") ? "light" : "dark";
@@ -496,7 +461,6 @@ document.addEventListener("DOMContentLoaded", () => {
             }
         }
     });
-
     const activeSessionUser = localStorage.getItem("active-login-session");
     if (activeSessionUser) {
         loadDashboardScreen(activeSessionUser);
