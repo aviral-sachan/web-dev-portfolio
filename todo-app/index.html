@@ -4,28 +4,25 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Ultimate Leaf To-Do Web</title>
-    <link rel="stylesheet" href="TODO.CSS">
+    <link rel="stylesheet" href="TODO.css">
 </head>
-<body class="light-theme auth-view">
+<body class="light-theme">
 
-    <div class="forest-bg-layer"></div>
+    <div id="app-preloader">
+        <div class="spinner"></div>
+        <p style="font-family: inherit; font-weight: 600; letter-spacing: 0.5px;">Loading TaskLeaf Workspace...</p>
+    </div>
 
     <div class="video-bg-container">
-        <video autoplay muted playsinline class="bg-video buffer-active" id="video-a">
-            <source src="leaf.mp4" type="video/mp4">
-        </video>
-        <video autoplay muted playsinline class="bg-video" id="video-b">
-            <source src="leaf.mp4" type="video/mp4">
-        </video>
+        <video id="video-a" class="bg-video buffer-active" autoplay muted playsinline></video>
+        <video id="video-b" class="bg-video" autoplay muted playsinline></video>
     </div>
 
-    <div id="cinematic-blur-overlay" class="initial-blur">
-        <div id="app-viewport-wrapper">
-        </div>
-    </div>
+    <div class="forest-bg-layer"></div>
+    <div id="cinematic-blur-overlay" class="initial-blur"></div>
 
-    <audio id="timer-alarm" src="https://google.com" preload="auto"></audio>
+    <div id="app-viewport-wrapper"></div>
 
-    <script src="TODO.JS"></script>
+    <script src="TODO.js"></script>
 </body>
 </html>
