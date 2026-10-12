@@ -1,4 +1,23 @@
 document.addEventListener("DOMContentLoaded", () => {
+    // 1. ASSET PRELOADER INITIALIZATION (साइट को स्मूथ चलाने के लिए)
+    const preloader = document.getElementById("app-preloader");
+    if (preloader) {
+        window.addEventListener("load", () => {
+            setTimeout(() => {
+                preloader.style.opacity = "0";
+                setTimeout(() => preloader.style.display = "none", 500);
+            }, 600);
+        });
+    } else {
+        setTimeout(() => {
+            const fallbackPreloader = document.getElementById("app-preloader");
+            if (fallbackPreloader) {
+                fallbackPreloader.style.opacity = "0";
+                setTimeout(() => fallbackPreloader.style.display = "none", 500);
+            }
+        }, 800);
+    }
+
     const blurOverlay = document.getElementById("cinematic-blur-overlay");
     const mainWrapper = document.getElementById("app-viewport-wrapper");
     let generatedCaptchaText = "";
@@ -18,7 +37,6 @@ document.addEventListener("DOMContentLoaded", () => {
         return nativeDay === 0 ? "day7" : "day" + nativeDay;
     };
     const activeStorageKey = getStorageKeyForToday();
-
     const AUTH_TEMPLATE = `
         <div id="auth-panel" class="todo-container auth-box">
             <div class="auth-brand-side">
@@ -57,10 +75,11 @@ document.addEventListener("DOMContentLoaded", () => {
             </div>
         </div>
     `;
+
     const MAIN_APP_TEMPLATE = `
-        <div class="dashboard-fade-in width-100 flex-col">
+        <div class="dashboard-fade-in width-100 flex-col" style="width:100%;">
             <nav class="navbar">
-                <div class="nav-brand" style="font-weight: bold; font-size: 1.3rem;">🍃 TaskLeaf</div>
+                <div class="nav-brand" id="user-greeting">🍃 TaskLeaf</div>
                 <div class="nav-links">
                     <button id="theme-toggle-btn" class="theme-toggle">🌙 Dark Mode</button>
                     <div class="dropdown-wrapper">
@@ -93,7 +112,7 @@ document.addEventListener("DOMContentLoaded", () => {
                     </div>
                     
                     <div class="card">
-                        <h3 style="color: #1b4d22 !important; margin-bottom: 12px; font-size: 16px; font-weight: 700;">Add a new task...</h3>
+                        <h3 style="margin-bottom: 12px; font-size: 16px; font-weight: 700;">Add a new task...</h3>
                         <div class="input-section flex-col" style="gap: 12px; display: flex;">
                             <input type="text" id="task-input" placeholder="Write your task here..." autocomplete="off">
                             <div class="flex-row width-100 gap-12" style="display: flex; gap: 10px; align-items: center;">
@@ -102,7 +121,7 @@ document.addEventListener("DOMContentLoaded", () => {
                                     <option value="medium">⚡ Medium Priority</option>
                                     <option value="high">🚨 High Priority</option>
                                 </select>
-                                <button id="add-btn" style="width: 44px; height: 44px; font-size: 20px;">+</button>
+                                <button id="add-btn" style="width: 44px; height: 44px; font-size: 20px; cursor:pointer;">+</button>
                             </div>
                         </div>
                         <button id="clear-all-btn" class="clear-all-action-btn">🧹 Clear Day's Tasks</button>
@@ -111,35 +130,41 @@ document.addEventListener("DOMContentLoaded", () => {
                 
                 <div class="right-panel flex-col" style="width: 100%;">
                     <div class="card">
-                        <h2 style="color: #1b4d22 !important; font-size: 18px; margin-bottom: 15px; border-bottom: 2px solid rgba(27, 77, 34, 0.15); padding-bottom: 6px;">Active Task Board</h2>
-                        <ul id="task-list" class="container">
-                        </ul>
+                        <h2 style="font-size: 18px; margin-bottom: 15px; border-bottom: 2px solid rgba(27, 77, 34, 0.15); padding-bottom: 6px;">Active Task Board</h2>
+                        <ul id="task-list" class="container"></ul>
                     </div>
                 </div>
             </div>
-            </div> 
-            
         </div> 
         
         <div class="dev-credit">🍃 Developed by Aviral</div>
-<div class="modal-overlay" id="contact-modal">
-    <div class="modal-box" style="text-align: center;">
-        <div class="modal-header">
-            <h3 style="color:white;">📬 Let's Connect</h3>
-            <button class="modal-close" id="contact-close-btn">&times;</button>
-        </div>
-        <div class="modal-body" style="padding: 10px 0;">
-            <p style="color:#eee; margin-bottom: 20px; font-size: 15px;">Hey, I am Aviral! Let's connect on LinkedIn for any feedback or ideas.</p>
-            <a href="https://linkedin.com" target="_blank" style="display: inline-block; padding: 10px 24px; background-color: #0077b5; color: white; text-decoration: none; font-weight: bold; border-radius: 25px; box-shadow: 0 4px 15px rgba(0,119,181,0.3); transition: transform 0.2s;">
-                💼 Visit My LinkedIn Profile
-            </a>
-        </div>
-    </div>
-</div>
 
+        <div class="modal-overlay" id="contact-modal">
+            <div class="modal-box" style="text-align: center;">
+                <div class="modal-header">
+                    <h3 style="color:white;">📬 Get In Touch</h3>
+                    <button class="modal-close" id="contact-close-btn">&times;</button>
+                </div>
+                <div class="modal-body contact-layout">
+                    <p style="color:#eee;">Have some ideas or feedback? Let's connect!</p>
+                    <div class="contact-links">
+                        <a href="https://github.com" target="_blank" class="contact-card">🐙 GitHub Profile</a>
+                        <a href="https://linkedin.com" target="_blank" class="contact-card">💼 LinkedIn Network</a>
+                    </div>
+                </div>
+            </div>
+        </div>
 
-            <div class="modal-overlay" id="history-modal"><div class="modal-box"><div class="modal-header"><h3 id="modal-day-title" style="color:white;">Day X</h3><button class="modal-close" id="modal-close-btn">&times;</button></div><div class="modal-body"><ul id="modal-task-list"></ul></div></div></div>
-            <div class="modal-overlay" id="contact-modal"><div class="modal-box"><div class="modal-header"><h3 style="color:white;">📬 Get In Touch</h3><button class="modal-close" id="contact-close-btn">&times;</button></div><div class="modal-body contact-layout"><p style="color:#eee;">Have some ideas or feedback? Let's connect!</p><div class="contact-links"><a href="https://github.com" target="_blank" class="contact-card">🐙 GitHub Profile</a><a href="https://linkedin.com" target="_blank" class="contact-card">💼 LinkedIn Network</a></div></div></div></div>
+        <div class="modal-overlay" id="history-modal">
+            <div class="modal-box">
+                <div class="modal-header">
+                    <h3 id="modal-day-title" style="color:white;">Day X</h3>
+                    <button class="modal-close" id="modal-close-btn">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <ul id="modal-task-list"></ul>
+                </div>
+            </div>
         </div>
     `;
     const loadAuthScreen = () => {
@@ -163,7 +188,7 @@ document.addEventListener("DOMContentLoaded", () => {
         const profileData = JSON.parse(localStorage.getItem("user-profile-" + userKey)) || {};
         const greetingHeader = document.getElementById("user-greeting");
         if (greetingHeader && profileData.name) {
-            greetingHeader.textContent = "Welcome back, " + profileData.name + "! 🍃";
+            greetingHeader.textContent = "🍃 Welcome, " + profileData.name + "!";
         }
 
         setupDashboardEvents(userKey);
@@ -221,8 +246,8 @@ document.addEventListener("DOMContentLoaded", () => {
             const nameVal = signupName.value.trim().toLowerCase().replace(/\s+/g, '');
             const dobVal = signupDob.value;
             if (nameVal.length >= 3 && dobVal) {
-                const yearPart = dobVal.split("-");
-                signupUserPreview.value = nameVal.substring(0, 3) + yearPart[0];
+                const yearPart = dobVal.split("-")[0];
+                signupUserPreview.value = nameVal.substring(0, 3) + yearPart;
             } else { signupUserPreview.value = ""; }
         };
 
@@ -330,6 +355,7 @@ document.addEventListener("DOMContentLoaded", () => {
             historyTrigger.addEventListener("click", (e) => { e.preventDefault(); e.stopPropagation(); historyDropdown.classList.toggle("show"); });
         }
         document.addEventListener("click", () => { if (historyDropdown) historyDropdown.classList.remove("show"); });
+
         if (contactTrigger) contactTrigger.addEventListener("click", (e) => { e.preventDefault(); contactModal.classList.add("open"); });
         if (contactCloseBtn) contactCloseBtn.addEventListener("click", () => contactModal.classList.remove("open"));
 
@@ -341,7 +367,7 @@ document.addEventListener("DOMContentLoaded", () => {
                 const historicalData = JSON.parse(localStorage.getItem(userKey + "-tasks-" + targetedDayKey)) || [];
                 if (!modalTaskList) return;
                 modalTaskList.innerHTML = "";
-                if (historicalData.length === 0) { modalTaskList.innerHTML = "<p style='color:#eee;'>No tasks found for this day.</p>"; }
+                if (historicalData.length === 0) { modalTaskList.innerHTML = "<p style='color:#eee; padding: 10px 0;'>No tasks found for this day.</p>"; }
                 else {
                     historicalData.forEach(task => {
                         const historicalLi = document.createElement("li"); historicalLi.className = "modal-li-item";
@@ -360,7 +386,6 @@ document.addEventListener("DOMContentLoaded", () => {
         const timerStatus = document.getElementById("timer-status");
         const startBtn = document.getElementById("timer-start-btn");
         const resetBtn = document.getElementById("timer-reset-btn");
-        const alarmAudio = document.getElementById("timer-alarm");
 
         if (!timerDisplay || !timerStatus || !startBtn || !resetBtn) return;
 
@@ -391,16 +416,7 @@ document.addEventListener("DOMContentLoaded", () => {
                         startBtn.textContent = "Start";
                         startBtn.style.background = "#1b4d22";
                         isTimerRunning = false;
-
-                        if (alarmAudio) {
-                            alarmAudio.play().catch(error => {
-                                console.log("Audio play blocked by browser policies: ", error);
-                                alert("⏰ Focus session complete! Time to take a break.");
-                            });
-                        } else {
-                            alert("Focus session complete! Time to take a leaf break. 🍃");
-                        }
-
+                        alert("Focus session complete! Time to take a leaf break. 🍃");
                         timeRemaining = 5 * 60;
                         updateTimerInterface();
                     }
@@ -417,17 +433,15 @@ document.addEventListener("DOMContentLoaded", () => {
             startBtn.style.background = "#1b4d22";
             timerStatus.textContent = "Time to focus!";
             updateTimerInterface();
-
-            if (alarmAudio) {
-                alarmAudio.pause();
-                alarmAudio.currentTime = 0;
-            }
         });
     };
 
-    const videoA = document.getElementById("video-a"); const videoB = document.getElementById("video-b");
-    const startOffset = 1.5; const endBufferOffset = 0.8;
+    const videoA = document.getElementById("video-a");
+    const videoB = document.getElementById("video-b");
+    const startOffset = 1.5;
+    const endBufferOffset = 0.8;
     let activePlayer = videoA, backupPlayer = videoB, timeupdateListener = null;
+
     const getVideoSource = () => document.body.classList.contains("dark-theme") ? "leaf2_gwr_video_mvp.mp4" : "leaf.mp4";
 
     const setupSeamlessLoop = (active, backup) => {
@@ -437,8 +451,10 @@ document.addEventListener("DOMContentLoaded", () => {
             if (active.currentTime >= active.duration - endBufferOffset) {
                 const correctSrc = getVideoSource();
                 if (!backup.src.includes(correctSrc)) { backup.src = correctSrc; backup.load(); }
-                backup.currentTime = startOffset; backup.play();
-                active.classList.remove("buffer-active"); backup.classList.add("buffer-active");
+                backup.currentTime = startOffset;
+                backup.play().catch(() => { });
+                active.classList.remove("buffer-active");
+                backup.classList.add("buffer-active");
                 active.removeEventListener("timeupdate", timeCheck);
                 setupSeamlessLoop(backup, active);
             }
@@ -455,10 +471,14 @@ document.addEventListener("DOMContentLoaded", () => {
             if (document.getElementById("theme-toggle-btn")) document.getElementById("theme-toggle-btn").textContent = "🌙 Dark Mode";
         }
         localStorage.setItem("user-theme", theme);
+
         const currentTargetSrc = getVideoSource();
         if (isInitialLoad && videoA && videoB) {
             videoA.src = currentTargetSrc; videoB.src = currentTargetSrc;
-            videoA.load(); videoB.load(); videoA.currentTime = startOffset; videoB.currentTime = startOffset;
+            videoA.load(); videoB.load();
+            videoA.currentTime = startOffset;
+            videoB.currentTime = startOffset;
+            videoA.play().catch(() => { });
             setupSeamlessLoop(videoA, videoB);
         }
     };
@@ -466,35 +486,23 @@ document.addEventListener("DOMContentLoaded", () => {
     document.addEventListener("click", (e) => {
         if (e.target && e.target.id === "theme-toggle-btn") {
             const newTheme = document.body.classList.contains("dark-theme") ? "light" : "dark";
-            activePlayer = videoA.classList.contains("buffer-active") ? videoA : videoB;
+            activePlayer = videoA && videoA.classList.contains("buffer-active") ? videoA : videoB;
             backupPlayer = activePlayer === videoA ? videoB : videoA;
             applyTheme(newTheme, false);
             const src = getVideoSource();
             if (activePlayer && backupPlayer) {
-                activePlayer.src = src; activePlayer.load(); activePlayer.currentTime = startOffset; activePlayer.play();
+                activePlayer.src = src; activePlayer.load(); activePlayer.currentTime = startOffset; activePlayer.play().catch(() => { });
                 backupPlayer.src = src; backupPlayer.load(); backupPlayer.currentTime = startOffset;
                 setupSeamlessLoop(activePlayer, backupPlayer);
             }
         }
     });
 
-        let activeSessionUser = null;
-    try {
-        activeSessionUser = localStorage.getItem("active-login-session");
-    } catch (e) {
-        console.log("Local storage temp block on GitHub Pages caught.");
-    }
-
+    const activeSessionUser = localStorage.getItem("active-login-session");
     if (activeSessionUser) {
         loadDashboardScreen(activeSessionUser);
     } else {
         loadAuthScreen();
     }
-
-    let savedTheme = "light";
-    try {
-        savedTheme = localStorage.getItem("user-theme") || "light";
-    } catch (e) {}
-    
-    applyTheme(savedTheme, true);
+    applyTheme(localStorage.getItem("user-theme") || "light", true);
 });
